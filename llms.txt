@@ -1,0 +1,13 @@
+# Angelica Dornton
+
+> Portfolio of Angelica Dornton, a web developer and designer. She builds and deploys full-stack web apps and designs interfaces with a focus on typography, layout, and color. Open to internships and freelance work.
+
+## Site
+
+- [Portfolio](https://eliutot.github.io/): About, work, current projects, and contact details.
+
+## Elsewhere
+
+- [GitHub](https://github.com/eliutot): Source code for projects.
+- [Behance](https://www.behance.net/angelicadornton): Visual and design work.
+- [Figma](https://www.figma.com/@dornton): UI design.
