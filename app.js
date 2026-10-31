@@ -17,7 +17,7 @@ let low = false, fps = 60, sweep = -1, vel = 0, fx = want
 const st = { hover: '-', scroll: 0 }
 
 const paint = () => { bar.textContent = `[NORMAL] > HOVER: ${st.hover} // SCROLL_Y: ${st.scroll}% // FPS: ${fps} // FX: ${fx ? 'ON' : low ? 'OFF (LOW FPS)' : 'OFF'}` }
-const sync = () => { fx = want && !clean && !low; $('#grid').hidden = $('#noise').hidden = !fx; paint() }
+const sync = () => { fx = want && !clean && !low; $('#grid').hidden = $('#noise').hidden = $('#blob').hidden = !fx; paint() }
 const out = (t, c) => { const d = document.createElement('div'); if (c) d.className = c; d.textContent = t; log.append(d); log.scrollTop = log.scrollHeight }
 const setView = id => { $$('.view').forEach(v => { v.hidden = v.id !== id }); cv.scrollTop = 0 }
 const show = p => VIEW[p] && setView(VIEW[p])
@@ -29,15 +29,8 @@ const res = a => {
 }
 
 const toggle = () => {
-  const go = () => {
-    clean = !clean
-    body.classList.toggle('clean', clean)
-    $('#tg').textContent = clean ? 'chaos mode' : 'clean mode'
-    sweep = -1
-    clean ? $$('.view').forEach(v => { v.hidden = false }) : setView('hero')
-    sync()
-  }
-  if (clean || !fx) return go()
+  const go = () => { sweep = -1; location.href = 'classic.html' }
+  if (!fx) return go()
   const t0 = performance.now()
   const step = t => { const k = (t - t0) / 600; sweep = Math.min(k, 1); k < 1 ? requestAnimationFrame(step) : go() }
   requestAnimationFrame(step)
@@ -94,7 +87,7 @@ float sn(vec2 v){const vec4 C=vec4(.211324865405187,.366025403784439,-.577350269
 void main(){vec2 uv=gl_FragCoord.xy/uR;if(uS>=0.&&uv.x<uS)discard;
 float tear=sn(vec2(floor(uv.y*50.),floor(uT*9.)))*uV*.12;vec2 p=vec2(uv.x+tear,uv.y)*uR*.5;
 float n=sn(p*.8+uT*4.)*.6+sn(p*.05+uT*.3)*.4;float g=step(.5,n);
-float e=uS>=0.?1.-smoothstep(0.,.006,abs(uv.x-uS)):0.;float a=max(g*.16,e);
+float e=uS>=0.?1.-smoothstep(0.,.006,abs(uv.x-uS)):0.;float a=max(g*.07,e);
 gl_FragColor=vec4(mix(vec3(1),vec3(.84,.07,.17),e)*a,a);}`))
   gl.linkProgram(pr); gl.useProgram(pr)
   gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer())
@@ -115,10 +108,10 @@ if (window.THREE) {
   const u = { uT: { value: 0 }, uM: { value: new T.Vector2(999, 999) } }
   sc.add(new T.LineSegments(geo, new T.ShaderMaterial({
     uniforms: u, transparent: true, depthWrite: false, blending: T.AdditiveBlending,
-    vertexShader: `uniform vec2 uM;uniform float uT;varying float vA;void main(){vec3 p=position;vec2 d=uM-p.xz;float f=exp(-dot(d,d)*.02);
+    vertexShader: `uniform vec2 uM;uniform float uT;varying float vA,vC;void main(){vec3 p=position;vec2 d=uM-p.xz;float f=exp(-dot(d,d)*.02);
 p.xz+=d*f*.55;p.y+=f*2.2+sin(p.x*.3+uT)*.25;vec4 mv=modelViewMatrix*vec4(p,1.);
-vA=clamp(1.-(-mv.z)/90.,0.,1.)*(.35+.3*sin(p.z*.35-uT*2.))+f*.6;gl_Position=projectionMatrix*mv;}`,
-    fragmentShader: 'varying float vA;void main(){gl_FragColor=vec4(.84,.07,.17,1.)*vA;}'
+vA=clamp(1.-(-mv.z)/90.,0.,1.)*(.22+.2*sin(p.z*.35-uT*2.))+f*.5;vC=smoothstep(-40.,12.,p.z)+f;gl_Position=projectionMatrix*mv;}`,
+    fragmentShader: 'varying float vA,vC;void main(){vec3 c=mix(vec3(.38,.03,.1),vec3(1.,.33,.24),clamp(vC,0.,1.));gl_FragColor=vec4(c*vA,1.);}'
   })))
   const ray = new T.Raycaster(), plane = new T.Plane(new T.Vector3(0, 1, 0), 0), hit = new T.Vector3()
   const fit = () => { rd.setPixelRatio(Math.min(devicePixelRatio, 1.5)); rd.setSize(innerWidth, innerHeight, false); cam.aspect = innerWidth / innerHeight; cam.updateProjectionMatrix() }
@@ -129,6 +122,36 @@ vA=clamp(1.-(-mv.z)/90.,0.,1.)*(.35+.3*sin(p.z*.35-uT*2.))+f*.6;gl_Position=proj
     if (ray.ray.intersectPlane(plane, hit)) u.uM.value.set(hit.x, hit.z)
     rd.render(sc, cam)
   }
+}
+
+// bloptracking: drifting tracked blobs, plus a lock-on frame for whatever you hover
+const bc = $('#blob'), b2 = bc.getContext('2d'), blobs = Array.from({ length: 6 }, (_, i) => ({ i, x: innerWidth / 2, y: innerHeight / 2, s: 40 + i * 14 }))
+const box = { x: 0, y: 0, w: 0, h: 0 }
+let lockEl = null
+document.addEventListener('pointerover', e => { lockEl = e.target.closest('.card,.clip,.cmds button,#hero h1') })
+const track = t => {
+  if (bc.width !== innerWidth || bc.height !== innerHeight) { bc.width = innerWidth; bc.height = innerHeight }
+  b2.clearRect(0, 0, bc.width, bc.height)
+  b2.font = '9px Roboto Mono, monospace'; b2.lineWidth = 1
+  blobs.forEach((b, i) => {
+    const tx = innerWidth * (.55 + .4 * Math.sin(t / 4200 + i * 1.9)), ty = innerHeight * (.5 + .4 * Math.cos(t / 5300 + i * 2.7))
+    b.x += (tx + (ptr.x - tx) * .12 - b.x) * .03; b.y += (ty + (ptr.y - ty) * .12 - b.y) * .03
+  })
+  b2.strokeStyle = 'rgba(233,231,225,.12)'; b2.beginPath()
+  blobs.forEach((b, i) => { const n = blobs[(i + 1) % blobs.length]; b2.moveTo(b.x, b.y); b2.lineTo(n.x, n.y) })
+  b2.stroke()
+  blobs.forEach(b => {
+    b2.strokeStyle = 'rgba(233,231,225,.26)'; b2.strokeRect(b.x - b.s / 2, b.y - b.s / 2, b.s, b.s)
+    b2.fillStyle = 'rgba(233,231,225,.4)'; b2.fillText(`b${b.i} ${b.x | 0},${b.y | 0}`, b.x - b.s / 2, b.y - b.s / 2 - 4)
+  })
+  if (!lockEl) return
+  const r = lockEl.getBoundingClientRect()
+  box.x += (r.left - box.x) * .25; box.y += (r.top - box.y) * .25; box.w += (r.width - box.w) * .25; box.h += (r.height - box.h) * .25
+  const g = b2.createLinearGradient(box.x, box.y, box.x + box.w, box.y + box.h)
+  g.addColorStop(0, '#ff5a3c'); g.addColorStop(1, '#6e0b1d')
+  b2.strokeStyle = g; b2.lineWidth = 2; b2.beginPath()
+  ;[[box.x, box.y, 1, 1], [box.x + box.w, box.y, -1, 1], [box.x, box.y + box.h, 1, -1], [box.x + box.w, box.y + box.h, -1, -1]].forEach(([x, y, dx, dy]) => { b2.moveTo(x + dx * 12, y); b2.lineTo(x, y); b2.lineTo(x, y + dy * 12) })
+  b2.stroke()
 }
 
 // ascii hero: initials sampled from an offscreen canvas, warped near the cursor
@@ -177,6 +200,7 @@ const loop = t => {
     gl.clear(gl.COLOR_BUFFER_BIT); gl.drawArrays(gl.TRIANGLES, 0, 3)
   }
   grid?.(t)
+  track(t)
 }
 requestAnimationFrame(loop)
 
@@ -188,4 +212,11 @@ $('#skip').addEventListener('click', done)
 addEventListener('keydown', e => { if (e.key === 'Escape') done() })
 lines.forEach((l, i) => setTimeout(() => { if (!booted) $('#bootlog').textContent += '> ' + l + '\n' }, i * 350))
 setTimeout(done, lines.length * 350 + 150)
-if (!want) done()
+if (!want || location.hash === '#back') done()
+
+// tool logos fall back to a monogram when a CDN icon is missing
+document.addEventListener('error', e => { const i = e.target; if (i.tagName !== 'IMG' || !i.closest('.tools')) return; const m = document.createElement('i'); m.textContent = i.dataset.m; i.replaceWith(m) }, true)
+$('#copy').addEventListener('click', async e => {
+  try { await navigator.clipboard.writeText('aj-dornton@proton.me'); e.target.textContent = 'copied' } catch { e.target.textContent = 'copy failed' }
+  setTimeout(() => { e.target.textContent = 'copy' }, 1800)
+})

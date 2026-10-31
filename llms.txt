@@ -1,13 +1,8 @@
 # Angelica Dornton
 
-> Portfolio of Angelica Dornton, a web developer and designer. She builds and deploys full-stack web apps and designs interfaces with a focus on typography, layout, and color. Open to internships and freelance work.
+> Full-stack web developer and graphic designer based in Edgefield, SC. Trained at ICSA Kuwait (HTML, CSS, JavaScript, PHP, MySQL, Laravel, Photoshop, Illustrator, CorelDRAW). Open to internships and freelance.
 
-## Site
-
-- [Portfolio](https://eliutot.github.io/): About, work, current projects, and contact details.
-
-## Elsewhere
-
-- [GitHub](https://github.com/eliutot): Source code for projects.
-- [Behance](https://www.behance.net/angelicadornton): Visual and design work.
-- [Figma](https://www.figma.com/@dornton): UI design.
+- [Portfolio](https://eliutot.github.io/): projects, about, contact
+- [GitHub](https://github.com/eliutot)
+- [Behance](https://www.behance.net/angelicadornton)
+- Email: aj-dornton@proton.me

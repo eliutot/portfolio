@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://cdn.jsdelivr.net; base-uri 'none'; form-action 'none'">
 <title>Angelica Dornton | Developer &amp; Designer Portfolio</title>
 <meta name="description" content="Portfolio of Angelica Dornton, a full-stack web developer and graphic designer. PHP, MySQL, Laravel, Figma. Open to internships and freelance.">
 <meta name="keywords" content="bloptracking, noise, ascii, texture, marquees, distressed, web developer, designer portfolio">
@@ -29,6 +29,7 @@
 <body>
 <canvas id="grid" aria-hidden="true"></canvas>
 <canvas id="noise" aria-hidden="true"></canvas>
+<canvas id="blob" aria-hidden="true"></canvas>
 <div id="xh" aria-hidden="true"></div>
 
 <div id="boot" role="status"><pre id="bootlog"></pre><button id="skip" type="button">Skip</button></div>
@@ -57,11 +58,11 @@
       </div>
       <pre id="asc" aria-hidden="true"></pre>
     </div>
-    <div class="mq" aria-hidden="true"><div>noise / ascii / texture / marquees / distressed / bloptracking / noise / ascii / texture / marquees / distressed / bloptracking / </div></div>
+    <div class="mq" aria-hidden="true"><div>no cookies, no analytics / every project here is a public repo / built on a saturday / no cookies, no analytics / every project here is a public repo / built on a saturday / </div></div>
   </section>
 
   <section class="view" id="work" hidden>
-    <h2>01 // WORK</h2>
+    <h2>01 // Work</h2>
     <div class="cards">
       <article class="card" data-s="digital_product_store // PHP, MYSQL // STATUS: STABLE">
         <div class="th" aria-hidden="true"></div>
@@ -81,22 +82,27 @@
   </section>
 
   <section class="view" id="about" hidden>
-    <h2>02 // ABOUT</h2>
-    <p>I'm a high school student in Edgefield County, SC, and a web developer and designer.</p>
-    <p>I trained through ICSA Kuwait in full-stack web development (HTML, CSS, JavaScript, PHP, MySQL, Laravel) and graphic design (Photoshop, Illustrator, CorelDRAW). I'm now expanding into systems administration and cloud infrastructure.</p>
-    <p>NJROTC cadet. I run Linux Mint at home and have been building projects since middle school.</p>
+    <h2>02 // About</h2>
+    <p class="big">A technical person who happens to know how to design, deploy, and manage things.</p>
+    <div class="clips">
+      <div class="clip"><h3>Where I'm from</h3><p>High school student in Edgefield County, SC, originally from Kuwait. NJROTC cadet. I run Linux Mint at home and have been building projects since middle school.</p></div>
+      <div class="clip"><h3>The first thing I built</h3><p>A digital product store in PHP and MySQL, from a 5-module spec for my ICSA web dev course. It never sold anything, but it was the first time I built a full app from a requirements document instead of copying a tutorial.</p></div>
+      <div class="clip"><h3>Training</h3><p>ICSA Kuwait: full-stack web development (HTML, CSS, JavaScript, PHP, MySQL, Laravel) and graphic design (Photoshop, Illustrator, CorelDRAW).</p><p class="num"><b>3</b>ICSA programs so far: web development, web programming, graphic design.</p></div>
+      <div class="clip"><h3>Right now</h3><ul class="now"><li>Building this portfolio, the thing you're reading.</li><li>Learning systems administration and cloud infrastructure.</li><li>Enrolled in ICSA Kuwait's dynamic web development program: full-stack, with live deployment.</li></ul></div>
+    </div>
     <h3>Tools</h3>
-    <ul class="tools"><li>HTML</li><li>CSS</li><li>JavaScript</li><li>Bootstrap</li><li>PHP</li><li>MySQL</li><li>Laravel</li><li>WordPress</li><li>Figma</li><li>Photoshop</li><li>Illustrator</li><li>CorelDRAW</li><li>Linux Mint</li><li>PowerShell</li><li>Git</li></ul>
+    <ul class="tools"><li><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.16.0/icons/html5/html5-original.svg" alt="" width="22" height="22" loading="lazy" data-m="HT">HTML</li><li><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.16.0/icons/css3/css3-original.svg" alt="" width="22" height="22" loading="lazy" data-m="CS">CSS</li><li><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.16.0/icons/javascript/javascript-original.svg" alt="" width="22" height="22" loading="lazy" data-m="Ja">JavaScript</li><li><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.16.0/icons/bootstrap/bootstrap-original.svg" alt="" width="22" height="22" loading="lazy" data-m="Bo">Bootstrap</li><li><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.16.0/icons/php/php-original.svg" alt="" width="22" height="22" loading="lazy" data-m="PH">PHP</li><li><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.16.0/icons/mysql/mysql-original.svg" alt="" width="22" height="22" loading="lazy" data-m="My">MySQL</li><li><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.16.0/icons/laravel/laravel-original.svg" alt="" width="22" height="22" loading="lazy" data-m="La">Laravel</li><li><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.16.0/icons/wordpress/wordpress-plain.svg" alt="" width="22" height="22" loading="lazy" data-m="Wo">WordPress</li><li><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.16.0/icons/figma/figma-original.svg" alt="" width="22" height="22" loading="lazy" data-m="Fi">Figma</li><li><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.16.0/icons/photoshop/photoshop-plain.svg" alt="" width="22" height="22" loading="lazy" data-m="Ph">Photoshop</li><li><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.16.0/icons/illustrator/illustrator-plain.svg" alt="" width="22" height="22" loading="lazy" data-m="Il">Illustrator</li><li><i>Co</i>CorelDRAW</li><li><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.16.0/icons/linux/linux-original.svg" alt="" width="22" height="22" loading="lazy" data-m="Li">Linux Mint</li><li><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.16.0/icons/powershell/powershell-original.svg" alt="" width="22" height="22" loading="lazy" data-m="Po">PowerShell</li><li><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.16.0/icons/git/git-original.svg" alt="" width="22" height="22" loading="lazy" data-m="Gi">Git</li></ul>
   </section>
 
   <section class="view" id="contact" hidden>
-    <h2>03 // CONTACT</h2>
-    <p>Email is the best way to reach me.</p>
+    <h2>03 // Contact</h2>
+    <p class="big">Email is the best way to reach me.</p>
+    <div class="mail"><a class="addr" href="mailto:aj-dornton@proton.me" data-s="MAILTO: aj-dornton@proton.me">aj-dornton@proton.me</a><button id="copy" type="button">copy</button></div>
+    <p>Open to internships and freelance. Writing about a project? Tell me what you're building and when you need it.</p>
     <ul class="links">
-      <li><a href="mailto:aj-dornton@proton.me">aj-dornton@proton.me</a></li>
-      <li><a href="https://github.com/eliutot" rel="noopener">github.com/eliutot</a></li>
-      <li><a href="https://www.behance.net/angelicadornton" rel="noopener">behance.net/angelicadornton</a></li>
-      <li><a href="https://www.figma.com/@dornton" rel="noopener">figma.com/@dornton</a></li>
+      <li><a href="https://github.com/eliutot" rel="noopener">github.com/eliutot</a><span>code</span></li>
+      <li><a href="https://www.behance.net/angelicadornton" rel="noopener">behance.net/angelicadornton</a><span>visual work</span></li>
+      <li><a href="https://www.figma.com/@dornton" rel="noopener">figma.com/@dornton</a><span>interface design</span></li>
     </ul>
   </section>
 </main>
