@@ -16,7 +16,7 @@ let cwd = '/', clean = false, want = !matchMedia('(prefers-reduced-motion:reduce
 let low = false, fps = 60, sweep = -1, vel = 0, fx = want
 const st = { hover: '-', scroll: 0 }
 
-const paint = () => { bar.textContent = `[NORMAL] > HOVER: ${st.hover} // SCROLL_Y: ${st.scroll}% // FPS: ${fps} // FX: ${fx ? 'ON' : low ? 'OFF (LOW FPS)' : 'OFF'}` }
+const paint = () => { bar.textContent = `[NORMAL] > HOVER: ${st.hover} // SCROLL_Y: [${'#'.repeat(st.scroll / 10 | 0).padEnd(10, '-')}] ${st.scroll}% // FPS: ${fps} // FX: ${fx ? 'ON' : low ? 'OFF (LOW FPS)' : 'OFF'}` }
 const sync = () => { fx = want && !clean && !low; $('#grid').hidden = $('#noise').hidden = $('#blob').hidden = !fx; paint() }
 const out = (t, c) => { const d = document.createElement('div'); if (c) d.className = c; d.textContent = t; log.append(d); log.scrollTop = log.scrollHeight }
 const setView = id => { $$('.view').forEach(v => { v.hidden = v.id !== id }); cv.scrollTop = 0 }
@@ -88,7 +88,7 @@ void main(){vec2 uv=gl_FragCoord.xy/uR;if(uS>=0.&&uv.x<uS)discard;
 float tear=sn(vec2(floor(uv.y*50.),floor(uT*9.)))*uV*.12;vec2 p=vec2(uv.x+tear,uv.y)*uR*.5;
 float n=sn(p*.8+uT*4.)*.6+sn(p*.05+uT*.3)*.4;float g=step(.5,n);
 float e=uS>=0.?1.-smoothstep(0.,.006,abs(uv.x-uS)):0.;float a=max(g*.07,e);
-gl_FragColor=vec4(mix(vec3(1),vec3(.84,.07,.17),e)*a,a);}`))
+gl_FragColor=vec4(mix(vec3(1),vec3(.75,.07,.16),e)*a,a);}`))
   gl.linkProgram(pr); gl.useProgram(pr)
   gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer())
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW)
@@ -108,10 +108,10 @@ if (window.THREE) {
   const u = { uT: { value: 0 }, uM: { value: new T.Vector2(999, 999) } }
   sc.add(new T.LineSegments(geo, new T.ShaderMaterial({
     uniforms: u, transparent: true, depthWrite: false, blending: T.AdditiveBlending,
-    vertexShader: `uniform vec2 uM;uniform float uT;varying float vA,vC;void main(){vec3 p=position;vec2 d=uM-p.xz;float f=exp(-dot(d,d)*.02);
+    vertexShader: `uniform vec2 uM;uniform float uT;varying float vA;void main(){vec3 p=position;vec2 d=uM-p.xz;float f=exp(-dot(d,d)*.02);
 p.xz+=d*f*.55;p.y+=f*2.2+sin(p.x*.3+uT)*.25;vec4 mv=modelViewMatrix*vec4(p,1.);
-vA=clamp(1.-(-mv.z)/90.,0.,1.)*(.22+.2*sin(p.z*.35-uT*2.))+f*.5;vC=smoothstep(-40.,12.,p.z)+f;gl_Position=projectionMatrix*mv;}`,
-    fragmentShader: 'varying float vA,vC;void main(){vec3 c=mix(vec3(.38,.03,.1),vec3(1.,.33,.24),clamp(vC,0.,1.));gl_FragColor=vec4(c*vA,1.);}'
+vA=clamp(1.-(-mv.z)/90.,0.,1.)*(.22+.2*sin(p.z*.35-uT*2.))+f*.5;gl_Position=projectionMatrix*mv;}`,
+    fragmentShader: 'varying float vA;void main(){gl_FragColor=vec4(.75,.07,.16,1.)*vA;}'
   })))
   const ray = new T.Raycaster(), plane = new T.Plane(new T.Vector3(0, 1, 0), 0), hit = new T.Vector3()
   const fit = () => { rd.setPixelRatio(Math.min(devicePixelRatio, 1.5)); rd.setSize(innerWidth, innerHeight, false); cam.aspect = innerWidth / innerHeight; cam.updateProjectionMatrix() }
@@ -147,38 +147,42 @@ const track = t => {
   if (!lockEl) return
   const r = lockEl.getBoundingClientRect()
   box.x += (r.left - box.x) * .25; box.y += (r.top - box.y) * .25; box.w += (r.width - box.w) * .25; box.h += (r.height - box.h) * .25
-  const g = b2.createLinearGradient(box.x, box.y, box.x + box.w, box.y + box.h)
-  g.addColorStop(0, '#ff5a3c'); g.addColorStop(1, '#6e0b1d')
-  b2.strokeStyle = g; b2.lineWidth = 2; b2.beginPath()
+  b2.strokeStyle = '#bf1229'; b2.lineWidth = 2; b2.beginPath()
   ;[[box.x, box.y, 1, 1], [box.x + box.w, box.y, -1, 1], [box.x, box.y + box.h, 1, -1], [box.x + box.w, box.y + box.h, -1, -1]].forEach(([x, y, dx, dy]) => { b2.moveTo(x + dx * 12, y); b2.lineTo(x, y); b2.lineTo(x, y + dy * 12) })
   b2.stroke()
 }
 
-// ascii hero: initials sampled from an offscreen canvas, warped near the cursor
-const asc = $('#asc'), W = 64, H = 26, RAMP = ' .:-=+*#%@'
-const oc = document.createElement('canvas'); oc.width = W; oc.height = H
-const cx = oc.getContext('2d', { willReadFrequently: true })
-let rows = 0
-const drawAscii = t => {
-  if (!asc.offsetParent) return
+// ascii: label text sampled from an offscreen canvas, warped near the cursor
+const RAMP = ' .:-=+*#%@'
+const asciiOf = (el, text, W, H, t, rows) => {
+  const oc = el._c || (el._c = Object.assign(document.createElement('canvas'), { width: W, height: H }))
+  const cx = oc.getContext('2d', { willReadFrequently: true })
   cx.fillStyle = '#000'; cx.fillRect(0, 0, W, H)
   cx.fillStyle = '#fff'; cx.textAlign = 'center'; cx.textBaseline = 'middle'
   cx.font = `900 ${H * .95}px Archivo, Impact, sans-serif`
-  cx.setTransform(1.7, 0, 0, 1, 0, 0); cx.fillText('AD', W / 2 / 1.7, H / 2 + 1); cx.setTransform(1, 0, 0, 1, 0, 0)
-  const d = cx.getImageData(0, 0, W, H).data, r = asc.getBoundingClientRect()
+  const sx = Math.min(1.7, W * .9 / cx.measureText(text).width)
+  cx.setTransform(sx, 0, 0, 1, 0, 0); cx.fillText(text, W / 2 / sx, H / 2 + 1); cx.setTransform(1, 0, 0, 1, 0, 0)
+  const d = cx.getImageData(0, 0, W, H).data, r = el.getBoundingClientRect()
   const mx = (ptr.x - r.left) / r.width * W, my = (ptr.y - r.top) / r.height * H
   let s = ''
   for (let y = 0; y < Math.min(rows, H); y++) {
     for (let x = 0; x < W; x++) {
-      const k = Math.hypot(x - mx, (y - my) * 2), sx = k < 10 ? Math.round(Math.sin(y * .8 + t / 90) * (10 - k) * .4) : 0
-      const l = d[(y * W + Math.min(W - 1, Math.max(0, x + sx))) * 4] / 255
+      const k = Math.hypot(x - mx, (y - my) * 2), sh = k < 10 ? Math.round(Math.sin(y * .8 + t / 90) * (10 - k) * .4) : 0
+      const l = d[(y * W + Math.min(W - 1, Math.max(0, x + sh))) * 4] / 255 * (.8 + .2 * Math.sin(x * .35 + y * .6 + t / 260))
       s += l < .05 ? (Math.random() < .03 ? '.' : ' ') : RAMP[Math.min(9, Math.floor(l * 9.99 - Math.random() * 1.5 * (k < 10)))] || '.'
     }
     s += '\n'
   }
-  asc.textContent = s
+  return s
 }
-setInterval(() => { rows = Math.min(H, rows + 1); drawAscii(performance.now()) }, 80)
+const asc = $('#asc'), thumbs = $$('.th pre')
+let rows = 0
+setInterval(() => {
+  const t = performance.now()
+  rows = Math.min(26, rows + 1)
+  if (asc.offsetParent) asc.textContent = asciiOf(asc, 'AD', 64, 26, t, rows)
+  thumbs.forEach(p => { if (p.offsetParent) p.textContent = asciiOf(p, p.dataset.t, 42, 14, t, 14) })
+}, 80)
 
 // frame loop + fps safety hatch
 let n = 0, last = 0, lowN = 0
