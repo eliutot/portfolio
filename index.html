@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a0a0a'/%3E%3Ccircle cx='32' cy='32' r='15' fill='none' stroke='%23bf1229' stroke-width='3'/%3E%3C/svg%3E">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://cdn.jsdelivr.net; base-uri 'none'; form-action 'none'">
 <title>Angelica Dornton | Developer &amp; Designer Portfolio</title>
 <meta name="description" content="Portfolio of Angelica Dornton, a full-stack web developer and graphic designer. PHP, MySQL, Laravel, Figma. Open to internships and freelance.">
@@ -39,8 +41,8 @@
   <nav class="cmds" aria-label="Sections">
     <button type="button" data-cmd="cd /" data-s="HOME">$ cd /</button>
     <button type="button" data-cmd="cd /projects" data-s="DIR: /projects">$ cd /projects</button>
-    <button type="button" data-cmd="cat about_me.txt" data-s="FILE: about_me.txt">$ cat about_me.txt</button>
-    <button type="button" data-cmd="cat contact.txt" data-s="FILE: contact.txt">$ cat contact.txt</button>
+    <button type="button" data-cmd="cat /about_me.txt" data-s="FILE: about_me.txt">$ cat about_me.txt</button>
+    <button type="button" data-cmd="cat /contact.txt" data-s="FILE: contact.txt">$ cat contact.txt</button>
   </nav>
   <div id="log" aria-live="polite"></div>
   <form id="f"><label for="cmd">$</label><input id="cmd" maxlength="64" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="help"></form>
@@ -83,7 +85,10 @@
 
   <section class="view" id="about" hidden>
     <h2>cat about_me.txt</h2>
-    <p class="big">Full-stack web developer and graphic designer, open to internships and freelance.</p>
+    <div class="intro">
+      <p class="big">Full-stack web developer and graphic designer, open to internships and freelance.</p>
+      <img class="mascot" src="assets/monokuma.gif" alt="Monokuma from Danganronpa" width="118" height="81" loading="lazy" data-s="ASSET: monokuma.gif">
+    </div>
     <dl class="facts">
       <dt>role</dt><dd>I build and deploy full-stack web apps, then design the interface.</dd>
       <dt>open to</dt><dd>Internships, freelance</dd>
@@ -100,6 +105,7 @@
       <div class="clip"><h3>first project</h3><p>A digital product store in PHP and MySQL, from a 5-module spec for my ICSA web dev course. It never sold anything, but it was the first time I built a full app from a requirements document instead of copying a tutorial.</p></div>
       <div class="clip"><h3>right now</h3><ul class="now"><li>Building this portfolio, the thing you're reading.</li><li>Learning systems administration and cloud infrastructure.</li><li>Enrolled in ICSA Kuwait's dynamic web development program: full-stack, with live deployment.</li></ul></div>
       <div class="clip"><h3>outside the code</h3><p>High school student in Edgefield County, SC. NJROTC cadet. I run Linux Mint at home and have been building projects since middle school.</p></div>
+      <div class="clip"><h3>off the clock</h3><p>Anime and manga take up most of it: <em>Berserk</em>, <em>NANA</em>, Satoshi Kon's films, Junji Ito. Music leans nu-metal and post-punk. The full running list lives on <a href="https://passportdex.com/angelicaa" rel="noopener">Passportdex</a>.</p></div>
     </div>
   </section>
 
@@ -117,12 +123,13 @@
       <li><a href="https://github.com/eliutot" rel="noopener">github.com/eliutot</a><span>code</span></li>
       <li><a href="https://www.behance.net/angelicadornton" rel="noopener">behance.net/angelicadornton</a><span>visual work</span></li>
       <li><a href="https://www.figma.com/@dornton" rel="noopener">figma.com/@dornton</a><span>interface design</span></li>
+      <li><a href="https://passportdex.com/angelicaa" rel="noopener">passportdex.com/angelicaa</a><span>media shelf</span></li>
     </ul>
   </section>
 </main>
 
 <footer id="bar" aria-hidden="true"></footer>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="app.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+<script src="app.js" defer></script>
 </body>
 </html>

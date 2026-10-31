@@ -12,12 +12,15 @@ const FS = {
 }
 const VIEW = { '/': 'hero', '/projects': 'work', '/about_me.txt': 'about', '/contact.txt': 'contact', '/projects/digital-store.txt': 'work', '/projects/figma-redesign.txt': 'work' }
 
+// touch devices skip the heaviest effect layer (the 3D grid) and get throttled canvases
+const light = matchMedia('(pointer:coarse)').matches
+
 let cwd = '/', clean = false, want = !matchMedia('(prefers-reduced-motion:reduce)').matches
 let low = false, fps = 60, sweep = -1, vel = 0, fx = want
 const st = { hover: '-', scroll: 0 }
 
 const paint = () => { bar.textContent = `[NORMAL] > HOVER: ${st.hover} // SCROLL_Y: [${'#'.repeat(st.scroll / 10 | 0).padEnd(10, '-')}] ${st.scroll}% // FPS: ${fps} // FX: ${fx ? 'ON' : low ? 'OFF (LOW FPS)' : 'OFF'}` }
-const sync = () => { fx = want && !clean && !low; $('#grid').hidden = $('#noise').hidden = $('#blob').hidden = !fx; paint() }
+const sync = () => { fx = want && !clean && !low; $('#grid').hidden = $('#noise').hidden = $('#blob').hidden = !fx; if (!grid) $('#grid').hidden = true; paint() }
 const out = (t, c) => { const d = document.createElement('div'); if (c) d.className = c; d.textContent = t; log.append(d); log.scrollTop = log.scrollHeight }
 const setView = id => { $$('.view').forEach(v => { v.hidden = v.id !== id }); cv.scrollTop = 0 }
 const show = p => VIEW[p] && setView(VIEW[p])
@@ -98,7 +101,7 @@ gl_FragColor=vec4(mix(vec3(1),vec3(.75,.07,.16),e)*a,a);}`))
 
 // 3D grid: intersections bend toward the cursor in the vertex shader
 let grid = null
-if (window.THREE) {
+if (window.THREE && !light) {
   const T = THREE, rd = new T.WebGLRenderer({ canvas: $('#grid'), alpha: true })
   const sc = new T.Scene(), cam = new T.PerspectiveCamera(55, 1, .1, 200)
   cam.position.set(0, 7, 14); cam.lookAt(0, 0, -8)
@@ -129,7 +132,10 @@ const bc = $('#blob'), b2 = bc.getContext('2d'), blobs = Array.from({ length: 6 
 const box = { x: 0, y: 0, w: 0, h: 0 }
 let lockEl = null
 document.addEventListener('pointerover', e => { lockEl = e.target.closest('.card,.clip,.cmds button,#hero h1') })
+let trackAt = 0
 const track = t => {
+  if (light && t - trackAt < 33) return
+  trackAt = t
   if (bc.width !== innerWidth || bc.height !== innerHeight) { bc.width = innerWidth; bc.height = innerHeight }
   b2.clearRect(0, 0, bc.width, bc.height)
   b2.font = '9px Roboto Mono, monospace'; b2.lineWidth = 1
@@ -176,10 +182,11 @@ const asciiOf = (el, text, W, H, t, rows) => {
   return s
 }
 const asc = $('#asc'), thumbs = $$('.th pre')
-let rows = 0
+let rows = 0, tick = 0
 setInterval(() => {
+  if (light && ++tick % 5) return
   const t = performance.now()
-  rows = Math.min(26, rows + 1)
+  rows = Math.min(26, rows + (light ? 5 : 1))
   if (asc.offsetParent) asc.textContent = asciiOf(asc, 'AD', 64, 26, t, rows)
   thumbs.forEach(p => { if (p.offsetParent) p.textContent = asciiOf(p, p.dataset.t, 42, 14, t, 14) })
 }, 80)
