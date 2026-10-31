@@ -1,21 +1,7 @@
 # Angelica Dornton — portfolio
 
-The source for [eliutot.github.io](https://eliutot.github.io/): a terminal-styled portfolio for a
-full-stack web developer and graphic designer, plus a calmer second build of the same content.
-
+The source for [dornton.vercel.app](dornton.vercel.app)
 No build step, no dependencies, no framework. Open the files with any static server and they run.
-
-## What's here
-
-| File | Purpose |
-| --- | --- |
-| `index.html` | The main build. Navigation is a fake shell — you click or type commands. |
-| `classic.html` | A calmer, document-style build of the same content. Reachable from "clean mode". |
-| `site.css` | All styling for the main build. |
-| `app.js` | Terminal commands, section routing, and the canvas/WebGL effects. |
-| `assets/monokuma.gif` | Self-hosted sticker in the about section. |
-| `llms.txt` | Short plain-text summary for language models. |
-| `sitemap.xml` | One URL, for search engines. |
 
 ## The terminal
 
@@ -38,11 +24,9 @@ command map, never evaluated.
 
 ## Effects
 
-Four layers stack behind the content — a WebGL grain/noise shader, a Three.js grid that bends toward
-the cursor, drifting tracked "blob" boxes drawn on a 2D canvas, and an ASCII portrait sampled from a
+Four layers stack behind the content: a WebGL grain/noise shader, a Three.js grid that bends toward
+the cursors, blobtracking, and an ASCII portrait sampled from a
 canvas at runtime.
-
-They degrade on their own:
 
 - If the frame rate stays under 28fps for three seconds, all effects switch off and stay off.
 - Touch devices skip the 3D grid and run the 2D layers at a reduced frame rate.
@@ -51,7 +35,7 @@ They degrade on their own:
 
 ## Running it locally
 
-Serve the directory over HTTP — don't open the files directly. The Content Security Policy in
+Serve the directory over HTTP, don't open the files directly. The Content Security Policy in
 `index.html` allows scripts from `'self'`, and browsers don't treat a `file://` page as `'self'`, so
 `app.js` gets blocked.
 
